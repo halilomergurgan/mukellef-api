@@ -26,6 +26,11 @@ class SubscriptionController extends Controller
         $this->paymentService = $paymentService;
     }
 
+    /**
+     * @param StoreSubscriptionRequest $request
+     * @param User $user
+     * @return JsonResponse
+     */
     public function store(StoreSubscriptionRequest $request, User $user): JsonResponse
     {
         $data = $request->validated();

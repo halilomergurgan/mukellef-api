@@ -25,6 +25,10 @@ class AuthController extends Controller
         $this->userService = $userService;
     }
 
+    /**
+     * @param RegisterRequest $request
+     * @return JsonResponse
+     */
     public function register(RegisterRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -61,7 +65,7 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return $this->jsonResponse(null, 'Successfully logged out', 200);
+        return $this->jsonResponse(null, 'Successfully logged out');
     }
 
     /**
