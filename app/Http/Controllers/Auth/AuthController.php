@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Http\Resources\User\UserResource;
+use App\Http\Resources\User\AuthUserResource;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -29,11 +29,11 @@ class AuthController extends Controller
     {
         $data = $request->validated();
 
-        return response()->json([
-            'data' => [
-                'user' => UserResource::make($this->userService->register($data))
-            ]
-        ], 201);
+        return $this->jsonResponse([
+            'user' => AuthUserResource::make($this->userService->register($data))
+        ], 'Success',
+            201
+        );
     }
 
     /**
@@ -47,10 +47,10 @@ class AuthController extends Controller
         $token = $this->userService->login($credentials);
 
         if (!$token) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return $this->jsonResponse(null, 'Unauthorized', 403);
         }
 
-        return response()->json(['data' => ['token' => $token, 'expires_in' => 60 * 24]]);
+        return $this->jsonResponse(['token' => $token, 'expires_in' => 60 * 24], 'Success');
     }
 
     /**
@@ -61,7 +61,7 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return $this->jsonResponse(null, 'Successfully logged out', 200);
     }
 
     /**
@@ -70,6 +70,6 @@ class AuthController extends Controller
      */
     public function me(Request $request): JsonResponse
     {
-        return response()->json(UserResource::make($request->user()));
+        return $this->jsonResponse(['user' => AuthUserResource::make($request->user())], 'Success');
     }
 }
