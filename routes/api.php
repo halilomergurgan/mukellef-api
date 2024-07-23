@@ -13,4 +13,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('user/{user}/subscription', [SubscriptionController::class, 'store']);
     Route::put('user/{user}/subscription/{subscription}', [SubscriptionController::class, 'update']);
+    Route::delete('user/{user}/subscription/{subscription}', [SubscriptionController::class, 'destroy']);
+    Route::post('user/{user}/transaction', [SubscriptionController::class, 'createTransaction']);
 });

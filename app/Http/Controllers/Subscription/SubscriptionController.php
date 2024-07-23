@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Subscription;
 
 use App\Http\Requests\Subscription\StoreSubscriptionRequest;
+use App\Http\Requests\Subscription\StoreTransactionRequest;
 use App\Http\Requests\Subscription\UpdateSubscriptionRequest;
 use App\Http\Resources\Subscription\SubscriptionResource;
+use App\Http\Resources\Subscription\TransactionResource;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use App\Services\PaymentService;
 use App\Http\Controllers\Controller;
 
@@ -27,11 +31,11 @@ class SubscriptionController extends Controller
     {
         $data = $request->validated();
 
-        return response()->json([
-            'data' => [
-                'subscription' => SubscriptionResource::make($this->paymentService->storeSubscription($user, $data))
-            ]
-        ], 201);
+        return $this->jsonResponse([
+            'subscription' => SubscriptionResource::make($this->paymentService->storeSubscription($user, $data))
+        ], 'Subscription created successfully.',
+            201
+        );
     }
 
     /**
@@ -45,15 +49,53 @@ class SubscriptionController extends Controller
         $data = $request->validated();
 
         if ($user->id !== $subscription->user_id) {
-            return response()->json(['error' => 'Unauthorized'], 403);
+            return $this->jsonResponse(null, 'Unauthorized', 403);
         }
 
-        $updatedSubscription = $this->paymentService->updateSubscription($subscription, $data);
+        $this->paymentService->updateSubscription($subscription, $data);
 
-        return response()->json([
-            'data' => [
-                'subscription' => SubscriptionResource::make($updatedSubscription)
-            ]
-        ], 201);
+        return $this->jsonResponse(null, 'Subscription updated.');
+    }
+
+    /**
+     * @param User $user
+     * @param Subscription $subscription
+     * @return JsonResponse
+     */
+    public function destroy(User $user, Subscription $subscription): JsonResponse
+    {
+        if ($user->id !== $subscription->user_id) {
+            return $this->jsonResponse(null, 'Unauthorized', 403);
+        }
+
+        $this->paymentService->destroySubscription($subscription);
+
+        return $this->jsonResponse(null, 'Subscription deleted successfully');
+    }
+
+    /**
+     * @param StoreTransactionRequest $request
+     * @param User $user
+     * @return JsonResponse
+     */
+    public function createTransaction(StoreTransactionRequest $request, User $user)
+    {
+        $data = $request->validated();
+
+        $price = $data['price'] ?? 100;
+
+        if ($this->paymentService->processPayment($user, $price)) {
+            $transaction = $this->paymentService->createTransaction(
+                $user,
+                $data['subscription_id'],
+                $price
+            );
+
+            return $this->jsonResponse([
+                'transaction' => TransactionResource::make($transaction)
+            ], 'Transaction created successfully.', 201);
+        }
+
+        return $this->jsonResponse(null, 'Payment failed', 400);
     }
 }
