@@ -9,11 +9,10 @@ use App\Http\Resources\Subscription\SubscriptionResource;
 use App\Http\Resources\Subscription\TransactionResource;
 use App\Models\Subscription;
 use App\Models\User;
-use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use App\Services\PaymentService;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 
 class SubscriptionController extends Controller
 {
@@ -90,6 +89,8 @@ class SubscriptionController extends Controller
                 $data['subscription_id'],
                 $price
             );
+
+            Mail::to($user->email)->send(new \App\Mail\PaymentReceived($transaction));
 
             return $this->jsonResponse([
                 'transaction' => TransactionResource::make($transaction)
