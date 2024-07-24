@@ -23,7 +23,6 @@ class StoreTransactionRequest extends FormRequest
     {
         return [
             'subscription_id' => 'required|exists:subscriptions,id',
-            'price' => 'nullable|numeric',
         ];
     }
 

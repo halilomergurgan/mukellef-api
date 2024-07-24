@@ -31,10 +31,10 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        $data = $request->validated();
+        $credentials = $request->validated();
 
         return $this->jsonResponse([
-            'user' => AuthUserResource::make($this->userService->register($data))
+            'user' => AuthUserResource::make($this->userService->register($credentials))
         ], 'Success',
             201
         );

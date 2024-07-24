@@ -11,9 +11,7 @@ class UpdateSubscriptionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $subscription = $this->route('subscription');
-
-        return $subscription && $this->user()->id === $subscription->user_id;
+        return true;
     }
 
     /**
@@ -24,7 +22,7 @@ class UpdateSubscriptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'renewal_at' => 'required|date_format:Y-m-d H:i:s',
+            'renewal_at' => 'required|date_format:Y-m-d H:i:s|after_or_equal:today',
         ];
     }
 

@@ -9,7 +9,6 @@ use App\Http\Resources\Subscription\SubscriptionResource;
 use App\Http\Resources\Subscription\TransactionResource;
 use App\Models\Subscription;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use App\Services\PaymentService;
 use App\Http\Controllers\Controller;
@@ -34,11 +33,15 @@ class SubscriptionController extends Controller
      */
     public function store(StoreSubscriptionRequest $request, User $user): JsonResponse
     {
-        $data = $request->validated();
+        $credentials = $request->validated();
 
-        return $this->jsonResponse([
-            'subscription' => SubscriptionResource::make($this->paymentService->storeSubscription($user, $data))
-        ], 'Subscription created successfully.',
+        return $this->jsonResponse(
+            [
+                'subscription' => SubscriptionResource::make(
+                    $this->paymentService->storeSubscription($user, $credentials)
+                )
+            ],
+            'Subscription created successfully.',
             201
         );
     }
@@ -51,13 +54,13 @@ class SubscriptionController extends Controller
      */
     public function update(UpdateSubscriptionRequest $request, User $user, Subscription $subscription): JsonResponse
     {
-        $data = $request->validated();
+        $credentials = $request->validated();
 
         if ($user->id !== $subscription->user_id) {
             return $this->jsonResponse(null, 'Unauthorized', 403);
         }
 
-        $this->paymentService->updateSubscription($subscription, $data);
+        $this->paymentService->updateSubscription($subscription, $credentials);
 
         return $this->jsonResponse(null, 'Subscription updated.');
     }
@@ -83,17 +86,15 @@ class SubscriptionController extends Controller
      * @param User $user
      * @return JsonResponse
      */
-    public function createTransaction(StoreTransactionRequest $request, User $user)
+    public function createTransaction(StoreTransactionRequest $request, User $user): JsonResponse
     {
-        $data = $request->validated();
+        $credentials = $request->validated();
 
-        $price = $data['price'] ?? 100;
-
-        if ($this->paymentService->processPayment($user, $price)) {
+        if ($this->paymentService->processPayment($user, Subscription::PRICE)) {
             $transaction = $this->paymentService->createTransaction(
                 $user,
-                $data['subscription_id'],
-                $price
+                $credentials['subscription_id'],
+                Subscription::PRICE
             );
 
             Mail::to($user->email)->send(new \App\Mail\PaymentReceived($transaction));

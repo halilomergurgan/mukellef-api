@@ -22,7 +22,7 @@ class StoreSubscriptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'renewal_at' => 'required|date_format:Y-m-d H:i:s',
+            'renewal_at' => 'required|date_format:Y-m-d H:i:s|after_or_equal:today',
         ];
     }
 

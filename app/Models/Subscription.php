@@ -11,6 +11,8 @@ use Carbon\Carbon;
 
 class Subscription extends Model
 {
+    CONST PRICE = 100;
+
     use HasFactory, SoftDeletes;
 
     protected $fillable = [

@@ -75,7 +75,7 @@ class PaymentService
      * @param $price
      * @return Transaction
      */
-    public function createTransaction(User $user, $subscriptionId, float $price = 100): Transaction
+    public function createTransaction(User $user, $subscriptionId, float $price): Transaction
     {
         return Transaction::create([
             'user_id' => $user->id,

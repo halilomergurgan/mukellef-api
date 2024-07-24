@@ -89,7 +89,7 @@ Projedeki bazı temel API endpoint'leri aşağıda listelenmiştir:
 
 ### Command/Job
 
-- Ödemeleri günlük olarak kontrol eden bir job eklenmiştir:
+- Ödemeleri saatlik olarak kontrol eden bir job eklenmiştir:
     ```bash
     php artisan subscriptions:renew
     ```

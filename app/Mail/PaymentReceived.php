@@ -11,14 +11,20 @@ class PaymentReceived extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $transaction;
+    public Transaction $transaction;
 
+    /**
+     * @param Transaction $transaction
+     */
     public function __construct(Transaction $transaction)
     {
         $this->transaction = $transaction;
     }
 
-    public function build()
+    /**
+     * @return Mailable
+     */
+    public function build(): Mailable
     {
         return $this->subject('Payment Received')
             ->view('emails.payment_received');

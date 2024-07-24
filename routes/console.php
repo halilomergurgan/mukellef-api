@@ -9,5 +9,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 app()->resolving(Schedule::class, function (Schedule $schedule) {
-    $schedule->command('subscriptions:renew')->daily();
+    $schedule->command('subscriptions:renew')->hourly();
 });
