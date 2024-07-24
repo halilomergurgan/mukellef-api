@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Subscription extends Model
 {
@@ -31,5 +32,23 @@ class Subscription extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    /**
+     * @return void
+     */
+    public function renew(): void
+    {
+        $this->renewal_at = Carbon::parse($this->renewal_at)->addMonth();
+
+        $this->save();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRenewalDue(): bool
+    {
+        return Carbon::parse($this->renewal_at)->isToday();
     }
 }
