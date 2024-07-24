@@ -2,15 +2,16 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use App\Models\User;
+use PHPUnit\Framework\Attributes\Test;
 
 class UserRegistrationTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function a_user_can_register()
     {
         $user = User::factory()->make([
@@ -28,7 +29,7 @@ class UserRegistrationTest extends TestCase
         $this->assertDatabaseHas('users', ['email' => $user->email]);
     }
 
-    /** @test */
+    #[Test]
     public function name_is_required_for_registration()
     {
         $user = User::factory()->make([
@@ -45,7 +46,7 @@ class UserRegistrationTest extends TestCase
         $response->assertJsonValidationErrors('name');
     }
 
-    /** @test */
+    #[Test]
     public function email_is_required_for_registration()
     {
         $user = User::factory()->make([
@@ -62,7 +63,7 @@ class UserRegistrationTest extends TestCase
         $response->assertJsonValidationErrors('email');
     }
 
-    /** @test */
+    #[Test]
     public function email_must_be_valid_for_registration()
     {
         $user = User::factory()->make([
@@ -80,7 +81,7 @@ class UserRegistrationTest extends TestCase
         $response->assertJsonValidationErrors('email');
     }
 
-    /** @test */
+    #[Test]
     public function email_must_be_unique_for_registration()
     {
         $existingUser = User::factory()->create();
@@ -96,7 +97,7 @@ class UserRegistrationTest extends TestCase
         $response->assertJsonValidationErrors('email');
     }
 
-    /** @test */
+    #[Test]
     public function password_is_required_for_registration()
     {
         $user = User::factory()->make([
@@ -112,7 +113,7 @@ class UserRegistrationTest extends TestCase
         $response->assertJsonValidationErrors('password');
     }
 
-    /** @test */
+    #[Test]
     public function password_must_be_confirmed_for_registration()
     {
         $user = User::factory()->make();
@@ -128,7 +129,7 @@ class UserRegistrationTest extends TestCase
         $response->assertJsonValidationErrors('password');
     }
 
-    /** @test */
+    #[Test]
     public function password_must_be_at_least_eight_characters_for_registration()
     {
         $user = User::factory()->make([

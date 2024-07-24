@@ -20,6 +20,7 @@ class TransactionResource extends JsonResource
             'user_id' => $this->user->id,
             'username' => $this->user->name,
             'subscription_id' => $this->subscription_id,
+            'price' => $this->price,
             'renewal_at' => $this->subscription->renewal_at,
             'created_at' => Carbon::parse($this->created_at)->format('d-m-Y H:i:s'),
         ];
