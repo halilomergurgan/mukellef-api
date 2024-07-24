@@ -8,7 +8,8 @@ Bu proje, Laravel 11 ve PHP 8.3 kullanılarak geliştirilmiş bir API projesidir
 - PHP 8.3
 - Docker
 - MySQL 8.0
-- 
+- Laravel Sanctum
+
 ## Kullanılan Koşullar
 
 - Dependency Injection
