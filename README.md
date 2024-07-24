@@ -50,7 +50,7 @@ Bu proje, Laravel 11 ve PHP 8.3 kullanılarak geliştirilmiş bir API projesidir
 
 ### Mail Gönderimi
 
-Mail gönderimi için mailtrap.io kullandım. Dilerseniz sizde kullanabilirsiniz.
+Mail gönderimi için mailtrap.io kullandım. Dilerseniz sizde kullanabilirsiniz. Ekran görüntüsünü mail ile ilettim. Bunun haricinde log içine mailleri atacaktır. storage/laravel.log
 
 ### Docker Komutları
 

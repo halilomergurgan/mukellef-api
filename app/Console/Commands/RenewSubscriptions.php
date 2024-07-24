@@ -2,18 +2,23 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\PaymentReceived;
+use App\Services\PaymentService;
 use Illuminate\Console\Command;
 use App\Models\Subscription;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class RenewSubscriptions extends Command
 {
+    protected PaymentService $paymentService;
     protected $signature = 'subscriptions:renew';
     protected $description = 'Renew subscriptions that are due';
 
-    public function __construct()
+    public function __construct(PaymentService $paymentService)
     {
         parent::__construct();
+        $this->paymentService = $paymentService;
     }
 
     /**
@@ -33,11 +38,22 @@ class RenewSubscriptions extends Command
         foreach ($subscriptions as $subscription) {
             $this->info('Processing subscription for user: ' . $subscription->user->email);
 
-            $paymentSuccessful = $this->processPayment($subscription->user);
+            $paymentSuccessful = $this->paymentService->processPayment($subscription->user, $subscription->price);
 
             if ($paymentSuccessful) {
                 $subscription->renew();
+
+                $transaction = $subscription->transactions()->create([
+                    'user_id' => $subscription->user_id,
+                    'subscription_id' => $subscription->id,
+                    'price' => Subscription::PRICE,
+                ]);
+
+                Mail::to($subscription->user->email)->send(new PaymentReceived($transaction));
+
                 $this->info('Subscription renewed for user: ' . $subscription->user->email);
+
+                sleep(1);
             } else {
                 $this->warn('Payment failed for user: ' . $subscription->user->email);
             }
