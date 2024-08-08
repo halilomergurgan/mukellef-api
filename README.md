@@ -69,11 +69,11 @@ docker-compose.yml dosyalasının içinde DB bilgileri bulabiliriniz. .env.examp
 
 ### Projeyi Çalıştırma
 
-Host dosyanıza 127.0.0.1 mukellef-api.test ekleyiniz. Eğer eklemek istemiyorsanız nginx->default.conf dosyası içindeki server_name alanını localhost olarak değiştiriniz.
+Host dosyanıza 127.0.0.1 localhost ekleyiniz. Eğer eklemek istemiyorsanız nginx->default.conf dosyası içindeki server_name alanını localhost olarak değiştiriniz.
 
 Docker konteynerlerini başlattıktan sonra, projeyi tarayıcınızda şu adresi kullanarak görüntüleyebilirsiniz:
 
-- [http://mukellef-api.test](http://mukellef-api.test)
+- [http://localhost](http://localhost)
 
 ### API Endpoints
 

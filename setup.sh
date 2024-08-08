@@ -30,5 +30,5 @@ docker-compose exec app php artisan migrate --force
 echo "Seeding the database..."
 docker-compose exec app php artisan db:seed
 
-echo "Setup complete. You can now access your project at http://mukellef-api.test"
+echo "Setup complete. You can now access your project at http://localhost"
 
