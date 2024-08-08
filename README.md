@@ -27,10 +27,6 @@ Bu proje, Laravel 11 ve PHP 8.3 kullanılarak geliştirilmiş bir API projesidir
 ### Adımlar
 
 1. Projeyi klonlayın:
-    ```bash
-    git clone https://github.com/halilomergurgan/mukellef-api.git
-    cd proje
-    ```
 
 2. Docker konteynerlerini başlatın ve yapılandırın:
     ```bash
